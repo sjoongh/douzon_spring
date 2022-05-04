@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import spring.Client;
 
-@Configuration
+@Configuration // 설정 파일임을 알려준다.
 public class JavaConfig { // XML 기반 설정이 아닌 자바 기반 설정
 	
 	// Bean이라는 것을 명시해야함, 기존의 xml에서 설정해주던 Bean설정
