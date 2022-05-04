@@ -7,5 +7,6 @@
 	<bean id="curling" class="ex03.di.Curling" p:name="김영미" p:position="공격수" p:sport="컬링" />
 	
 	<bean id="soccer" class="ex03.di.Soccer" p:name="차두리" p:position="공격수" p:sport="축구" />
+	<bean id="basketball" class="ex03.di.Soccer" p:name="차두리" p:position="공격수" p:sport="축구" />
 	
 </beans>

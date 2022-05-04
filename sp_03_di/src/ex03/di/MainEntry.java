@@ -9,6 +9,11 @@ public class MainEntry {
 		
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("ex03/di/playCtx.xml");
 		
+//		Myplayer player = ctx.getBean("myPlayer", Myplayer.class);
+//		String[] sportName = {"축구", "농구", "컬링"};
+//		
+//		Object[]
+		
 		// 직접 접근
 //		ctx.getBean("curling", Curling.class);
 		// 부모로 들어가기
