@@ -12,7 +12,7 @@ public class MonitorViewer {
 	
 	public void print() {
 		System.out.println("method 주입 : " + this.recorder);
-		recorder.show();
+//		recorder.show();
 	}
 	
 }

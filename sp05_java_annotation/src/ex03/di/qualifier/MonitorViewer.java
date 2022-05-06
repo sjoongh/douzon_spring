@@ -10,15 +10,14 @@ public class MonitorViewer {
 	// @inject
 	// injection 되는 타입의 객체(bean)가 존재하지 않아도 error없이 실행 가능
 	@Autowired(required = false)
-	@Qualifier("aa")
-	public void setRecorder(Recorder recorder) {
+	@Qualifier("aa") // 1. 이렇게 기재해도 되고
+	public void setRecorder(Recorder recorder) { // 2.
 		this.recorder = recorder;
 		System.out.println("@Autowired 자동 주입");
 	}
 	
 	@Autowired
-	@Qualifier("bb")
-	public MonitorViewer(Recorder recorder) {
+	public MonitorViewer(@Qualifier("bb") Recorder recorder) { // 생성자 함수에는 파라미터 안에 기재
 		this.recorder = recorder;
 		System.out.println("asd");
 	}
