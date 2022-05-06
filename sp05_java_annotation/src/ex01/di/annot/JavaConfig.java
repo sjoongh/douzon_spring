@@ -34,6 +34,7 @@ public class JavaConfig {
 		return myCats;
 	}
 	
+	@Bean
 	public Cats catsInfo() {
 		Cats cats = new Cats(this.cat1());
 		return cats;
