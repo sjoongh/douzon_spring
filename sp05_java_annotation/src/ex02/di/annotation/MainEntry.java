@@ -8,10 +8,11 @@ public class MainEntry {
 	public static void main(String[] args) {
 		
 		ApplicationContext context = 
-				new GenericXmlApplicationContext("ex02/di/autowired/applicationContext.xml");
+				new GenericXmlApplicationContext("classpath:ex02/di/autowired/applicationContext.xml");
 		
 		MonitorViewer viewer = context.getBean("monitorViewer", MonitorViewer.class);
-		System.out.println(viewer.getRecorder().toString());
+//		System.out.println(viewer.getRecorder().toString());
+		viewer.print();
 	}
 
 }
