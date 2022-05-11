@@ -1,21 +1,25 @@
-package edu.kosa.dao;
+package edu.kosa.dao_di;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Scanner;
 
 import edu.kosa.model.UserVO;
 
-public abstract class UserDAO { // 추상클래스
+public class UserDAO { // 추상클래스
 
-	// 디비 연결 관련 메소드
-	// 추상 메소드
-	public abstract Connection getConnection() throws Exception;
+	private ConnectionMaker  connectionMaker;
+	
+	public UserDAO(ConnectionMaker  connectionMaker) {  // DI
+		this.connectionMaker = connectionMaker; 
+	}
 	
 	// 3. 사용(dml명령어)
 	// insert
 	public void insert(UserVO user) throws Exception {
-		Connection conn = getConnection();
+		Connection conn = connectionMaker.makeConnection();  // db 연결
 		String sql = "insert into users(id, name, password) values(?,?,?)";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		
@@ -29,20 +33,24 @@ public abstract class UserDAO { // 추상클래스
 		conn.close();
 	}
 	// selectAll
-	public void selectAll(UserVO user) throws Exception {
-		Connection conn = getConnection();
-		String sql = "select * from users";
-		PreparedStatement ps = conn.prepareStatement(sql);
+	public void selectAll() throws Exception {
+		Connection conn = connectionMaker.makeConnection();  // db 연결
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM USERS");
 		
-		int result = ps.executeUpdate();
-		System.out.println(result);
-		ps.close();
-		conn.close();
+		System.out.println("ID \t Name \t PWD");
+		while (rs.next()) {
+			String id = rs.getString("id");
+			String name = rs.getString("name");
+			String pwd = rs.getString("password");
+			
+			System.out.println(id + "\t" + name + "\t" + pwd);
+		}
 	}
 	
 	// selectById - 조건에 맞는 레코드 select 하기
 	public void selectById(UserVO user) throws Exception {
-		Connection conn = getConnection();
+		Connection conn = connectionMaker.makeConnection();  // db 연결
 		String sql = "select * from users where id = ?";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		
@@ -55,7 +63,7 @@ public abstract class UserDAO { // 추상클래스
 	}
 	// update
 	public void update(UserVO user) throws Exception {
-		Connection conn = getConnection();
+		Connection conn = connectionMaker.makeConnection();  // db 연결
 		Scanner sc = new Scanner(System.in);
 		String sql = "update users set name=? where name = ?";
 		PreparedStatement ps = conn.prepareStatement(sql);
@@ -74,7 +82,7 @@ public abstract class UserDAO { // 추상클래스
 	
 	// delete
 	public void delete(UserVO user) throws Exception {
-		Connection conn = getConnection();
+		Connection conn = connectionMaker.makeConnection();  // db 연결
 		String sql = "delete from users where id = ?";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		
