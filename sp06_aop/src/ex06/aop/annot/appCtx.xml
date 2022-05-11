@@ -9,7 +9,7 @@
 	<!-- appCtx.xml -->
 	<aop:aspectj-autoproxy />
 	
-	<bean />
+	<bean class="ex06.aop.annot.LogApp" id="advice"/>
 	<bean id="student" class="ex06.aop.annot.Student" p:name="변신남" p:age="22" p:gradeNum="3" p:classNum="5" />
 	<bean id="worker" class="ex06.aop.annot.Worker" p:name="변신녀" p:age="33" p:job="디자이너" />
 	
