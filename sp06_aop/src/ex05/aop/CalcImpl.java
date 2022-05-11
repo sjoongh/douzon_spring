@@ -20,9 +20,9 @@ public class CalcImpl implements ICalc {
 	@Override
 	public int sub(int x, int y, int z) {
 		
-//		if( y > x ) {
-//			throw new IllegalArgumentException("y값이 x보다 큽니다.");
-//		}
+		if( y > x ) {
+			throw new IllegalArgumentException("y값이 x보다 큽니다.");
+		}
 		
 		int sub = x - y - z;  // 주관심사
 		return sub;
