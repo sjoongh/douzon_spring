@@ -14,9 +14,9 @@ public class MainEntry {
 		UserDAO dao = new UserDAO(new SConnectionMakerImpl());
 		UserVO vo = new UserVO();
 		
-//		vo.setId("이상윤 commit");
-//		vo.setName("잘생긴");
-//		vo.setPassword("멋쟁이");
+		vo.setId("");
+		vo.setName("팀장이");
+		vo.setPassword("되고싶습니다.");
 		dao.insert(vo);
 		dao.selectAll();
 		
