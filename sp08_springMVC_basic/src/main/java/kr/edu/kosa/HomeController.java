@@ -7,6 +7,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 public class HomeController  implements Controller {  // Controller
+	
+	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
 	@Override
 	public ModelAndView handleRequest(HttpServletRequest request, 
@@ -14,7 +16,7 @@ public class HomeController  implements Controller {  // Controller
 		
 		ModelAndView  mav = new ModelAndView();
 		
-		mav.addObject("nickname", "kingsmile");  // data save
+		mav.addObject("nickname", "doyeon3333");  // data save
 		mav.setViewName("/views/hello.jsp");		// move view page
 		
 		return mav;
