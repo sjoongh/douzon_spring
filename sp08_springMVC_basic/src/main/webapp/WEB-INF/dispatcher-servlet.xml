@@ -4,5 +4,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<!-- dispatcher-servlet.xml -->
 
-	<bean class="kr.edu.kosa.HelloController"  name="/hello.do"/>
+<!-- 	<bean class="kr.edu.kosa.HelloController"  name="/hello.do"/> -->
+	<bean class="kr.edu.kosa.ListController" name="/list.do" />
+	
+	<!-- ViewResolver 빈 객체 생성 -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/views/</value></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
 </beans>
