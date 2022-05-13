@@ -6,8 +6,13 @@
 
 	<!-- 	user class interface(object) create & viewResolver 설정등을 한다. -->
 	
+	<bean class="edu.kosa.controller.WriterFormController">
+	</bean>
+	<bean class="edu.kosa.controller.WriteController">
+		<property name="guestDAO" ref="dao" />
+	</bean>
 	
-	
+<!-- 	<bean class="edu.kosa.model.GuestDAOImpl" id="dao" /> -->
 	
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix"><value>/WEB-INF/views/</value></property>
