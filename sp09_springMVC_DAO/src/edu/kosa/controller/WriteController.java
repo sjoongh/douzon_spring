@@ -38,6 +38,6 @@ public class WriteController {
 		
 		guestDAO.insertGuest(dto);
 				
-		return "redirect:list"; // /WEB-INF/views/ + list + .jsp
+		return "redirect:list.do"; // /WEB-INF/views/ + list + .jsp
 	}
 }
