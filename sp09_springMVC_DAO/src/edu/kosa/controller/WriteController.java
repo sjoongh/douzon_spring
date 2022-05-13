@@ -28,7 +28,7 @@ public class WriteController {
 		String home = request.getParameter("home");
 		String contents = request.getParameter("contents");
 		int num = Integer.parseInt(request.getParameter("no"));
-		
+		System.out.println(name+"plz");
 		GuestDTO dto = new GuestDTO();
 		dto.setName(name);
 		dto.setEmail(email);
@@ -38,6 +38,6 @@ public class WriteController {
 		
 		guestDAO.insertGuest(dto);
 				
-		return "list"; // /WEB-INF/views/ + list + .jsp
+		return "redirect:list"; // /WEB-INF/views/ + list + .jsp
 	}
 }

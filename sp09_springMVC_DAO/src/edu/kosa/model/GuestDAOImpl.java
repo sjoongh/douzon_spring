@@ -15,7 +15,7 @@ public class GuestDAOImpl implements GuestDAO {
 
 	@Override
 	public List listGuest() { // select
-		String sql = "SELECT * FROM GUESTBOOK ORDER BY NUM DESC";
+		String sql = "SELECT * FROM GUESTBOOK ORDER BY NAME DESC";
 		// 반환받는건 앞에 query가 들어가야함 --> select 같은
 		return jdbcTemplate.queryForList(sql);
 	}

@@ -11,6 +11,7 @@
 	<bean class="edu.kosa.controller.WriteController">
 		<property name="guestDAO" ref="dao" />
 	</bean>
+	<bean class="edu.kosa.controller.ListController" p:gusetDAO-ref="dao" />
 	
 <!-- 	<bean class="edu.kosa.model.GuestDAOImpl" id="dao" /> -->
 	
