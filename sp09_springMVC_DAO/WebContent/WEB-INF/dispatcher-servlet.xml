@@ -6,11 +6,10 @@
 
 	<!-- 	user class interface(object) create & viewResolver 설정등을 한다. -->
 	
-	<bean class="edu.kosa.controller.WriterFormController">
-	</bean>
-	<bean class="edu.kosa.controller.WriteController">
+	<bean class="edu.kosa.controller.WriterFormController" />
+	<!-- <bean class="edu.kosa.controller.WriteController">
 		<property name="guestDAO" ref="dao" />
-	</bean>
+	</bean>  -->
 	<bean class="edu.kosa.controller.ListController" p:gusetDAO-ref="dao" />
 	
 <!-- 	<bean class="edu.kosa.model.GuestDAOImpl" id="dao" /> -->

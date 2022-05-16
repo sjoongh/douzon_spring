@@ -2,10 +2,15 @@ package edu.kosa.model;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+@Component("dao") // ("dao")처럼 빈 이름을 정할 수 있다.
+// @Component // guestDAOImpl bean 생성한다
 public class GuestDAOImpl implements GuestDAO {
 	
+	@Autowired
 	private JdbcTemplate jdbcTemplate; // DML - insert, update, delete, select 등등의 명령어를 가지고 있음
 	
 	

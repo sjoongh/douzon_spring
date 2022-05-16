@@ -12,12 +12,12 @@
 	</bean>
 	
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-		<property name="dataSource" ref="dataSource"></property>
+		<!-- <property name="dataSource" ref="dataSource"></property> -->
 	</bean>
 	
-	<!-- DAO 객체 생성 -->
+	<!-- DAO 객체 생성 
 	<bean id="dao" class="edu.kosa.model.GuestDAOImpl">
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
-	</bean>
+	</bean> -->
 	
 </beans>
