@@ -17,4 +17,11 @@ public class BoardVO {
 	private String searchCondition;
 	private String searchKeyword;
 	
+	
+	@Override
+	public String toString() {
+		return "BoardVO [seq=" + seq + ", cnt=" + cnt + ", title=" + title + ", writer=" + writer + ", content="
+				+ content + ", regDate=" + regDate;
+	}
+	
 }

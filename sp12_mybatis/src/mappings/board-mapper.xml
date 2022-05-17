@@ -15,4 +15,17 @@
   		select * from mybatisBoard where seq=#{seq}
   	</select>
   	
+  	<update id="updateBoard">
+  		update mybatisBoard set title = #{title}, content=#{content} where seq = #{seq}
+  	</update>
+  	
+  	<delete id="deleteBoard">
+  		delete mybatisBoard where seq=#{seq}
+  	</delete>
+  	
+  	<select id="getBoardList">
+  		select * from mybatisBoard
+  			where #{searchCondition} like '%' || #{searchKeyword} || '%'
+  			order by seq desc
+  	</select>
   </mapper>
