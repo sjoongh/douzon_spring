@@ -11,7 +11,7 @@ public class SqlSessionFactoryService {
 	private static SqlSessionFactory sqlSessionFactory;
 	
 	static {
-		String source = "sqlMapConfig.xml";
+		String source = "./sqlMapConfig.xml";
 		
 		try {
 			Reader reader = Resources.getResourceAsReader(source);

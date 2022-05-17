@@ -5,7 +5,7 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
   
   <configuration>
-  	<properties resource="com/kosa/config/db.properties" />
+  	<properties resource="db.properties" />
   	
   	<typeAliases>
   		<typeAlias type="com.kosa.model.GuestDTO" alias="dto" />
