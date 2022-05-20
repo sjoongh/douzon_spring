@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+	<security:http auto-config="false" use-expressions="true">
+		<security:csrf disabled="true" />
+		<!-- 메인페이지 -->
+		<security:intercept-url pattern="/main"
+			access="hasRole('ROLE_general')" />
+		<!-- 탑메뉴 -->
+		<security:intercept-url pattern="/sidemenu_patient"		access="hasRole('ROLE_patient_page_view')" />
+		<security:intercept-url pattern="/sidemenu_human_resources"		access="hasRole('ROLE_human_resources_page_view')" />
+		<security:intercept-url pattern="/sidemenu_inventory"		access="hasRole('ROLE_inventory_page_view')" />
+		<security:intercept-url pattern="/sidemenu_accounting"		access="hasRole('ROLE_accounting_page_view')" />	
+			<security:intercept-url pattern="/sidemenu_admin"		access="hasRole('ROLE_admin_page_view')" />
+		<security:intercept-url pattern="/sidemenu_reservation"	access="hasRole('ROLE_reservation_page_view')" />
+		<security:intercept-url pattern="/sidemenu_board"			access="hasRole('ROLE_board_page_view')" />
+		
+		<!-- 예약 -->
+		<security:intercept-url pattern="/patientSearch"
+			access="hasAnyRole('ROLE_reservation_page1_master','ROLE_reservation_page1_anything','ROLE_reservation_page1_readWrite','ROLE_reservation_page1_readOnly')" />
+		<security:intercept-url pattern="/receptionList"
+			access="hasAnyRole('ROLE_reservation_page2_master','ROLE_reservation_page2_anything','ROLE_reservation_page2_readWrite','ROLE_reservation_page2_readOnly')" />
+		<security:intercept-url pattern="/reservationList"
+			access="hasAnyRole('ROLE_reservation_page3_master','ROLE_reservation_page3_anything','ROLE_reservation_page3_readWrite','ROLE_reservation_page3_readOnly')" />
+		
+		<!-- 환자 -->
+		<security:intercept-url pattern="/patientList"
+			access="hasAnyRole('ROLE_patient_page1_master','ROLE_patient_page1_anything','ROLE_patient_page1_readWrite','ROLE_patient_page1_readOnly')" />
+		<security:intercept-url pattern="/patientView"
+			access="hasAnyRole('ROLE_patient_page1_master','ROLE_patient_page1_anything','ROLE_patient_page1_readWrite')" />
+		<security:intercept-url pattern="/treatment_list"
+			access="hasAnyRole('ROLE_patient_page1_master','ROLE_patient_page1_anything','ROLE_patient_page1_readWrite')" />
+		<security:intercept-url pattern="/prescription_list"
+			access="hasAnyRole('ROLE_patient_page1_master','ROLE_patient_page1_anything','ROLE_patient_page1_readWrite')" />
+		<security:intercept-url pattern="/reservationPatient"
+			access="hasAnyRole('ROLE_patient_page1_master','ROLE_patient_page1_anything','ROLE_patient_page1_readWrite')" />
+
+
+		<security:intercept-url pattern="/treatment_admin"
+			access="hasAnyRole('ROLE_patient_page2_master','ROLE_patient_page2_anything','ROLE_patient_page2_readWrite','ROLE_patient_page2_readOnly')" />
+		<security:intercept-url pattern="/treatment_update"
+			access="hasAnyRole('ROLE_patient_page2_master','ROLE_patient_page2_anything')" />
+		<security:intercept-url pattern="/treatment_insert"
+			access="hasAnyRole('ROLE_patient_page2_master','ROLE_patient_page2_anything','ROLE_patient_page2_readWrite')" />
+		<security:intercept-url pattern="/prescription_admin"
+			access="hasAnyRole('ROLE_patient_page3_master','ROLE_patient_page3_anything','ROLE_patient_page3_readWrite','ROLE_patient_page3_readOnly')" />
+		<security:intercept-url pattern="/prescription_update"
+			access="hasAnyRole('ROLE_patient_page3_master','ROLE_patient_page3_anything')" />
+		<security:intercept-url pattern="/prescription_insert"
+			access="hasAnyRole('ROLE_patient_page3_master','ROLE_patient_page3_anything','ROLE_patient_page3_readWrite')" />
+	
+		<!-- 재고 -->
+		<security:intercept-url pattern="/stockList"
+			access="hasAnyRole('ROLE_inventory_page1_master','ROLE_inventory_page1_anything','ROLE_inventory_page1_readWrite','ROLE_inventory_page1_readOnly')" />
+		<security:intercept-url pattern="/stockModify"
+			access="hasAnyRole('ROLE_inventory_page1_master','ROLE_inventory_page1_anything','ROLE_inventory_page1_readWrite','ROLE_inventory_page1_readOnly')" />
+		<security:intercept-url pattern="/invoiceList"
+			access="hasAnyRole('ROLE_inventory_page2_master','ROLE_inventory_page2_anything','ROLE_inventory_page2_readWrite','ROLE_inventory_page2_readOnly')" />
+		<security:intercept-url pattern="/invoiceAdd"
+			access="hasAnyRole('ROLE_inventory_page2_master','ROLE_inventory_page2_anything','ROLE_inventory_page2_readWrite')" />
+		<security:intercept-url pattern="/invoiceView"
+			access="hasAnyRole('ROLE_inventory_page2_master','ROLE_inventory_page2_anything','ROLE_inventory_page2_readWrite','ROLE_inventory_page2_readOnly')" />
+		<security:intercept-url pattern="/supplierList"
+			access="hasAnyRole('ROLE_inventory_page3_master','ROLE_inventory_page3_anything','ROLE_inventory_page3_readWrite','ROLE_inventory_page3_readOnly')" />
+		<security:intercept-url pattern="/supplierAdd"
+			access="hasAnyRole('ROLE_inventory_page3_master','ROLE_inventory_page3_anything','ROLE_inventory_page3_readWrite')" />
+		<security:intercept-url pattern="/supplierView"
+			access="hasAnyRole('ROLE_inventory_page3_master','ROLE_inventory_page3_anything','ROLE_inventory_page3_readWrite','ROLE_inventory_page3_readOnly')" />
+	
+		<!-- 회계 -->
+		<security:intercept-url pattern="/accountList"
+			access="hasAnyRole('ROLE_accounting_page1_master','ROLE_accounting_page1_anything','ROLE_accounting_page1_readWrite','ROLE_accounting_page1_readOnly')" />
+		<security:intercept-url pattern="/accountModify"
+			access="hasAnyRole('ROLE_accounting_page1_master','ROLE_accounting_page1_anything')" />
+		<security:intercept-url pattern="/accountWrite"
+			access="hasAnyRole('ROLE_accounting_page1_master','ROLE_accounting_page1_anything','ROLE_accounting_page1_readWrite')" />
+		<security:intercept-url pattern="/acctypeList"
+			access="hasAnyRole('ROLE_accounting_page2_master','ROLE_accounting_page2_anything','ROLE_accounting_page2_readWrite','ROLE_accounting_page2_readOnly')" />
+		<security:intercept-url pattern="/acctypeModify"
+			access="hasAnyRole('ROLE_accounting_page2_master','ROLE_accounting_page2_anything')" />
+		<security:intercept-url pattern="/acctypeAdd"
+			access="hasAnyRole('ROLE_accounting_page2_master','ROLE_accounting_page2_anything','ROLE_accounting_page2_readWrite')" />
+		
+		<!-- 인사 -->
+		<security:intercept-url pattern="/hospital_list"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything','ROLE_human_resources_page1_readWrite','ROLE_human_resources_page1_readOnly')" />
+		<security:intercept-url pattern="/hospital_content_view"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything','ROLE_human_resources_page1_readWrite','ROLE_human_resources_page1_readOnly')" />
+		<security:intercept-url pattern="hospital_content_array"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything')" />
+		<security:intercept-url pattern="/depart_search_list"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything')" />
+		<security:intercept-url pattern="/duty_search_list"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything')" />
+		<security:intercept-url pattern="/bank_search_list"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything')" />
+		<security:intercept-url pattern="/hospital_search"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything','ROLE_human_resources_page1_readWrite','ROLE_human_resources_page1_readOnly')" />
+		<security:intercept-url pattern="/sign_up"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything')" />
+		<security:intercept-url pattern="/duty_list"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything')" />
+		<security:intercept-url pattern="/department_list"
+			access="hasAnyRole('ROLE_human_resources_page1_master','ROLE_human_resources_page1_anything')" />
+
+		<security:intercept-url pattern="/commute"
+			access="hasAnyRole('ROLE_human_resources_page2_master','ROLE_human_resources_page2_anything','ROLE_human_resources_page2_readWrite','ROLE_human_resources_page2_readOnly')" />
+		<security:intercept-url pattern="/commute_holy_day_process_popup"
+			access="hasAnyRole('ROLE_human_resources_page2_master','ROLE_human_resources_page2_anything','ROLE_human_resources_page2_readWrite')" />
+		<security:intercept-url pattern="/absence_search"
+			access="hasAnyRole('ROLE_human_resources_page2_master','ROLE_human_resources_page2_anything','ROLE_human_resources_page2_readWrite')" />
+		<security:intercept-url pattern="/commute_holyday_process_emp_sign_up"
+			access="hasAnyRole('ROLE_human_resources_page2_master','ROLE_human_resources_page2_anything','ROLE_human_resources_page2_readWrite')" />
+
+		<security:intercept-url pattern="/hospital_pay_list"
+			access="hasAnyRole('ROLE_human_resources_page3_master','ROLE_human_resources_page3_anything','ROLE_human_resources_page3_readWrite','ROLE_human_resources_page3_readOnly')" />
+		<security:intercept-url pattern="/hospital_content_view_popup"
+			access="hasAnyRole('ROLE_human_resources_page3_master','ROLE_human_resources_page3_anything')" />
+		<security:intercept-url pattern="/basic_pay_list"
+			access="hasAnyRole('ROLE_human_resources_page3_master','ROLE_human_resources_page3_anything')" />
+		<security:intercept-url pattern="/basic_pay_content_view"
+			access="hasAnyRole('ROLE_human_resources_page3_master','ROLE_human_resources_page3_anything')" />
+		<security:intercept-url pattern="/basic_pay_sign_view"
+			access="hasAnyRole('ROLE_human_resources_page3_master','ROLE_human_resources_page3_anything')" />
+		<security:intercept-url pattern="/duty_search_list"
+			access="hasAnyRole('ROLE_human_resources_page3_master','ROLE_human_resources_page3_anything','ROLE_human_resources_page3_readWrite','ROLE_human_resources_page3_readOnly')" />
+
+		<security:intercept-url pattern="/commute2"
+			access="hasRole('ROLE_human_resources_page4_master')" />
+		<security:intercept-url pattern="/commute_holyday_process_view"
+			access="hasRole('ROLE_human_resources_page4_master')" />
+
+		<security:intercept-url pattern="/resignation_list"
+			access="hasRole('ROLE_human_resources_page4_master')" />
+		<security:intercept-url pattern="/hospital_content_view_resignation"
+			access="hasRole('ROLE_human_resources_page4_master')" />
+		<security:intercept-url pattern="/resignation_sign"
+			access="hasRole('ROLE_human_resources_page4_master')" />
+		<security:intercept-url pattern="/resignation_cancel"
+			access="hasRole('ROLE_human_resources_page4_master')" />
+		
+		<!-- 게시판 -->
+		<security:intercept-url pattern="/noticeList"
+			access="hasAnyRole('ROLE_board_page1_master','ROLE_board_page1_anything','ROLE_board_page1_readWrite','ROLE_board_page1_readOnly')" />
+		<security:intercept-url pattern="/noticeView"
+			access="hasAnyRole('ROLE_board_page1_master','ROLE_board_page1_anything','ROLE_board_page1_readWrite','ROLE_board_page1_readOnly')" />
+		<security:intercept-url pattern="/noticeModify"
+			access="hasAnyRole('ROLE_board_page1_master','ROLE_board_page1_anything')" />
+		<security:intercept-url pattern="/noticeWrite"
+			access="hasAnyRole('ROLE_board_page1_master','ROLE_board_page1_anything','ROLE_board_page1_readWrite')" />
+
+		<security:intercept-url pattern="/bizList"
+			access="hasAnyRole('ROLE_board_page2_master','ROLE_board_page2_anything','ROLE_board_page2_readWrite','ROLE_board_page2_readOnly')" />
+		<security:intercept-url pattern="/bizView"
+			access="hasAnyRole('ROLE_board_page2_master','ROLE_board_page2_anything','ROLE_board_page2_readWrite','ROLE_board_page2_readOnly')" />
+		<security:intercept-url pattern="/bizModify"
+			access="hasAnyRole('ROLE_board_page2_master','ROLE_board_page2_anything')" />
+		<security:intercept-url pattern="/bizWrite"
+			access="hasAnyRole('ROLE_board_page2_master','ROLE_board_page2_anything','ROLE_board_page2_readWrite')" />
+
+		<security:intercept-url pattern="/minutesList"
+			access="hasAnyRole('ROLE_board_page3_master','ROLE_board_page3_anything','ROLE_board_page3_readWrite','ROLE_board_page3_readOnly')" />
+		<security:intercept-url pattern="/minutesView"
+			access="hasAnyRole('ROLE_board_page3_master','ROLE_board_page3_anything','ROLE_board_page3_readWrite','ROLE_board_page3_readOnly')" />
+		<security:intercept-url pattern="/minutesModify"
+			access="hasAnyRole('ROLE_board_page3_master','ROLE_board_page3_anything')" />
+		<security:intercept-url pattern="/minutesWrite"
+			access="hasAnyRole('ROLE_board_page3_master','ROLE_board_page3_anything','ROLE_board_page3_readWrite')" />
+
+		<!-- 관리 -->
+		<security:intercept-url pattern="/hospital_info"
+			access="hasAnyRole('ROLE_admin_page1_master','ROLE_admin_page1_anything','ROLE_admin_page1_readWrite','ROLE_admin_page1_readOnly')" />
+		<security:intercept-url pattern="/hospital_info_new"
+			access="hasAnyRole('ROLE_admin_page1_master','ROLE_admin_page1_anything','ROLE_admin_page1_readWrite')" />
+		<security:intercept-url pattern="/hospital_info_modify"
+			access="hasAnyRole('ROLE_admin_page1_master','ROLE_admin_page1_anything','ROLE_admin_page1_readWrite')" />
+
+		<security:intercept-url pattern="/user_admin"
+			access="hasAnyRole('ROLE_admin_page2_master','ROLE_admin_page2_anything','ROLE_admin_page2_readWrite','ROLE_admin_page2_readOnly')" />
+		<security:intercept-url pattern="/user_update"
+			access="hasAnyRole('ROLE_admin_page2_master','ROLE_admin_page2_anything')" />
+		<security:intercept-url pattern="/user_authority_modify"
+			access="hasRole('ROLE_admin_page2_master')" />
+		<security:intercept-url pattern="/user_insert"
+			access="hasRole('ROLE_admin_page2_master')" />
+		<security:intercept-url pattern="/user_authority_insert"
+			access="hasRole('ROLE_admin_page2_master')" />
+
+
+
+		<security:form-login username-parameter="u_id"
+			password-parameter="u_pwd" login-page="/" login-processing-url="/j_spring_security_check"
+			default-target-url="/main" authentication-failure-url="/login?fail=true" />
+
+		<security:logout logout-success-url="/"
+			invalidate-session="true" />
+
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<!-- <security:user-service> <security:user name="user1" password="user1" 
+				authorities="ROLE_USER"/> <security:user name="admin" password="admin" authorities="ROLE_USER,ROLE_ADMIN"/> 
+				</security:user-service> -->
+			<security:jdbc-user-service
+				data-source-ref="dataSource"
+				users-by-username-query="select u_id, u_pwd, 1 enabled from user_member where u_id=?"
+				authorities-by-username-query="select * from (select s.r_id,s.R_AUTHORITY from SECURITY_ROLE s union select r.c_id, r.C_AUTHORITY  from role_comparison r) r where r_id=?" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+</beans>

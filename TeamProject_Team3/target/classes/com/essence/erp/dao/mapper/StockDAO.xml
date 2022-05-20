@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.essence.erp.dao.StockDAO">
+
+	<select id="stockList" resultType="com.essence.erp.dto.StockDTO">
+		SELECT * FROM STOCK ORDER BY ST_CODE, ST_NAME
+	</select>
+	
+	<select id="invoiceList" resultType="com.essence.erp.dto.InvoiceDTO">
+		SELECT * FROM INVOICE ORDER BY IN_DATE DESC
+	</select>
+	
+	<select id="check" parameterType="com.essence.erp.dto.InvoiceDTO" resultType="int">
+		SELECT COUNT(*) FROM STOCK WHERE ST_CODE = #{st_code} AND ST_NAME = #{st_name} AND ST_MODEL = #{st_model}
+	</select>
+	
+	<insert id="invoiceAdd" parameterType="com.essence.erp.dto.InvoiceDTO">
+		INSERT INTO INVOICE VALUES 
+			(INVOICE_SEQ.NEXTVAL, #{st_code}, #{st_name}, #{st_std}, #{st_model}, #{st_man}, #{st_vendor}, #{st_qty}, #{st_unit}, 
+				#{in_price}, #{in_date})
+	</insert>
+	
+	<update id="qtyAdd" parameterType="com.essence.erp.dto.InvoiceDTO">
+		UPDATE STOCK SET ST_QTY = ST_QTY + #{st_qty} 
+			WHERE ST_CODE = #{st_code} AND ST_MODEL = #{st_model}
+	</update>
+	
+	<insert id="stockAdd" parameterType="com.essence.erp.dto.InvoiceDTO">
+		INSERT INTO STOCK VALUES 
+			(#{st_code}, #{st_name}, #{st_std}, #{st_model}, #{st_man}, #{st_vendor}, #{st_qty}, #{st_unit})
+	</insert>
+	
+	<update id="stockSub" parameterType="com.essence.erp.dto.InvoiceDTO">
+		UPDATE STOCK SET ST_QTY = ST_QTY - #{st_qty} 
+			WHERE ST_CODE = #{st_code} AND ST_MODEL = #{st_model}
+	</update>
+	
+	<delete id="invoiceDelete" parameterType="com.essence.erp.dto.InvoiceDTO">
+		DELETE FROM INVOICE 
+			WHERE ST_CODE = #{st_code} AND ST_MODEL = #{st_model} AND ST_QTY = #{st_qty} AND IN_DATE = #{in_date}
+	</delete>
+	
+	<select id="invoiceView" parameterType="com.essence.erp.dto.InvoiceDTO" resultType="com.essence.erp.dto.InvoiceDTO">
+		SELECT * FROM INVOICE 
+			WHERE ST_CODE = #{st_code} AND ST_MODEL = #{st_model} AND IN_DATE = #{in_date}
+	</select>
+	
+	<select id="stockQty" parameterType="com.essence.erp.dto.InvoiceDTO" resultType="int">
+		SELECT ST_QTY FROM STOCK 
+			WHERE ST_CODE = #{st_code} AND ST_NAME = #{st_name} AND ST_MODEL = #{st_model}
+	</select>
+	
+	<update id="stockModify" parameterType="com.essence.erp.dto.InvoiceDTO">
+		UPDATE STOCK SET ST_QTY = #{st_qty} 
+			WHERE ST_CODE = #{st_code} AND ST_MODEL = #{st_model}
+	</update>
+	
+	<update id="invoiceModify" parameterType="com.essence.erp.dto.InvoiceDTO">
+		UPDATE INVOICE SET ST_QTY = #{st_qty}, IN_PRICE = #{in_price}, IN_DATE = #{in_date}
+			WHERE IN_SEQ = #{in_seq}
+	</update>
+	
+	<select id="invoiceSearch" parameterType="java.lang.String" resultType="com.essence.erp.dto.InvoiceDTO">
+		SELECT * FROM INVOICE 
+		<where>
+		<if test="st_vendor != null and st_vendor != ''">
+			ST_VENDOR = #{st_vendor} 
+		</if>
+		<if test="start != null and start != ''">
+			AND IN_DATE BETWEEN #{start} AND #{end} 
+		</if>
+		 </where>
+		 	ORDER BY IN_DATE DESC
+	</select>
+	
+	<select id="stockView" parameterType="java.lang.String" resultType="com.essence.erp.dto.StockDTO">
+		SELECT * FROM STOCK WHERE ST_CODE = #{st_code}
+	</select>
+	
+	<update id="stockModi" parameterType="com.essence.erp.dto.StockDTO">
+		UPDATE STOCK SET ST_QTY = #{st_qty} WHERE ST_CODE = #{st_code} AND ST_MODEL = #{st_model}
+	</update>
+	
+	<delete id="stockDelete" parameterType="java.lang.String">
+		DELETE FROM STOCK WHERE ST_CODE = #{ST_CODE}
+	</delete>
+	
+	<select id="st_code_check" parameterType="java.lang.String" resultType="int">
+		SELECT COUNT(*) FROM STOCK WHERE ST_CODE = #{st_code}
+	</select>
+	
+	<select id="su_taxid_check" parameterType="java.lang.String" resultType="int">
+		SELECT COUNT(*) FROM SUPPLIER WHERE SU_TAXID = #{su_taxid}
+	</select>
+	
+</mapper>

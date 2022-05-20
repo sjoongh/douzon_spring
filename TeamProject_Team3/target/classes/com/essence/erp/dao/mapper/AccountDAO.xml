@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.essence.erp.dao.AccountDAO">
+
+	<select id="list" resultType="com.essence.erp.dto.AccountDTO">
+		SELECT * FROM ACCOUNT ORDER BY AC_DATE DESC
+	</select>
+	
+	<select id="list2" parameterType="java.lang.String" resultType="com.essence.erp.dto.AccountDTO">
+		SELECT SUM(AC_IMP) SUM_AC_IMP, SUM(AC_EXP) SUM_AC_EXP FROM ACCOUNT
+		<where>
+			<if test="date1 != null and date1 != ''">
+				AC_DATE BETWEEN #{date1} AND #{date2}
+			</if>
+			<if test="ac_typename != null and ac_typename != ''">
+				AND AC_TYPENAME=#{ac_typename}
+			</if>
+		</where>
+	</select>
+	
+	<select id="list3" parameterType="java.lang.String" resultType="com.essence.erp.dto.AccountDTO">
+		SELECT * FROM ACCOUNT
+		<where>
+			<if test="date1 != null and date1 != ''">
+				AC_DATE BETWEEN #{date1} AND #{date2}
+			</if>
+			<if test="ac_typename != null and ac_typename != ''">
+				AND AC_TYPENAME=#{ac_typename}
+			</if>
+		</where>
+		ORDER BY AC_DATE DESC
+	</select>
+	
+	<insert id="write" parameterType="com.essence.erp.dto.AccountDTO">
+		INSERT INTO ACCOUNT VALUES 
+			(ACCOUNT_SEQ.NEXTVAL, #{ac_date}, #{ac_typename}, #{ac_cont}, #{ac_imp}, #{ac_exp})
+	</insert>
+	
+	<select id="type_code" resultType="com.essence.erp.dto.AcctypeDTO">
+		SELECT * FROM ACC_TYPE_CODE
+	</select>
+	
+	<select id="modifyForm" parameterType="com.essence.erp.dto.AccountDTO" resultType="com.essence.erp.dto.AccountDTO">
+		SELECT * FROM ACCOUNT WHERE AC_SEQ = #{ac_seq}
+	</select>
+	
+	<update id="modify" parameterType="com.essence.erp.dto.AccountDTO">
+		UPDATE ACCOUNT SET AC_DATE = #{ac_date}, AC_TYPENAME = #{ac_typename},
+			AC_CONT = #{ac_cont}, AC_IMP = #{ac_imp}, AC_EXP = #{ac_exp} WHERE AC_SEQ = #{ac_seq}
+	</update>
+	
+	<delete id="delete" parameterType="com.essence.erp.dto.AccountDTO">
+		DELETE FROM ACCOUNT WHERE AC_SEQ = #{ac_seq}
+	</delete>
+	
+	<select id="ac_seq" parameterType="com.essence.erp.dto.AccountDTO" resultType="java.lang.String">
+		SELECT AC_SEQ FROM ACCOUNT WHERE AC_DATE = #{ac_date} AND AC_CONT = #{ac_cont}
+	</select>
+	
+	<select id="payList" resultType="com.essence.erp.dto.PaymentDTO">
+		SELECT * FROM PAYMENT
+	</select>
+	
+	<delete id="payDel" parameterType="com.essence.erp.dto.PaymentDTO">
+		DELETE FROM PAYMENT WHERE C_NO = #{c_no}
+	</delete>
+	
+	<select id="currDate" resultType="java.lang.String">
+		SELECT TO_CHAR(SYSDATE,'YYYY-MM-DD') FROM DUAL
+	</select>
+		
+	<select id="acctypeList" resultType="com.essence.erp.dto.AcctypeDTO" parameterType="com.essence.erp.dto.Criteria">
+		 <![CDATA[ 
+		select * from (select b.*, rownum r from (select type_code, type_name 
+	    from acc_type_code order by type_code) b where rownum <= #{pageEnd}) where r >=#{pageStart}
+			]]>
+	</select>
+	
+	<select id="acctypeModifyList" parameterType="com.essence.erp.dto.AcctypeDTO" resultType="com.essence.erp.dto.AcctypeDTO">
+		select * from ACC_TYPE_CODE where type_code=#{type_code}
+	</select>
+	
+	 <insert id="acctypeAdd" parameterType="com.essence.erp.dto.AcctypeDTO">
+		insert into acc_type_code values (type_code_seq.nextval, #{type_name}) 
+	</insert>
+	
+	<update id="acctypeModify" parameterType="com.essence.erp.dto.AcctypeDTO" >
+		update acc_type_code set type_name=#{type_name} where type_code=#{type_code} 
+	</update>
+	
+	<delete id="acctypeDelete" parameterType="com.essence.erp.dto.AcctypeDTO">
+		delete from acc_type_code where type_code=#{type_code}
+	</delete> 
+	<select id="acctypeListCount" resultType="int">
+		select count(*) from acc_type_code
+	</select>
+	
+</mapper>

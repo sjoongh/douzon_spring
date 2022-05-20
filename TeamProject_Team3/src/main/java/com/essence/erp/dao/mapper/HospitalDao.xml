@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+   "-//mybatis.org//DTD Mapper 3.0//EN"
+      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.essence.erp.dao.HospitalDao">
+	<select id="list" resultType="com.essence.erp.dto.HospitalDto">
+		select * from hospital_information
+	</select>
+	
+	<update id="modify_nofile" parameterType="com.essence.erp.dto.HospitalDto">
+		update hospital_information set h_name=#{h_name}, h_master=#{h_master},  h_master_tel=#{h_master_tel}, 
+  			h_tel=#{h_tel},  h_map=#{h_map},  h_lnum=#{h_lnum} where h_name=#{h_name1}
+	</update>
+	
+	<update id="modify" parameterType="com.essence.erp.dto.HospitalDto">
+		update hospital_information set h_name=#{h_name}, h_master=#{h_master},  h_master_tel=#{h_master_tel}, 
+  			h_tel=#{h_tel},  h_map=#{h_map},  h_lnum=#{h_lnum}, h_logo=#{h_logo} where h_name=#{h_name1}
+	</update>
+	
+	<delete id="delete" parameterType="com.essence.erp.dto.HospitalDto">
+		delete hospital_information where h_name=#{h_name1}
+	</delete>
+	
+	<select id="count" resultType="int">
+		select count(h_name) from hospital_information
+	</select>
+	
+	<insert id="insert" parameterType="com.essence.erp.dto.HospitalDto">
+		insert into hospital_information(h_name,  h_master,  h_master_tel,  h_tel,  h_map,  h_lnum, h_logo ) 
+  values(#{h_name}, #{h_master}, #{h_master_tel}, #{h_tel}, #{h_map}, #{h_lnum}, #{h_logo})
+	</insert>
+	
+	<insert id="insert_nofile" parameterType="com.essence.erp.dto.HospitalDto">
+		insert into hospital_information(h_name,  h_master,  h_master_tel,  h_tel,  h_map,  h_lnum) 
+  values(#{h_name}, #{h_master}, #{h_master_tel}, #{h_tel}, #{h_map}, #{h_lnum})
+	</insert>
+	
+	
+	<select id="logo" resultType="String">
+		select h_logo from hospital_information
+	</select>
+</mapper>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.essence.erp.dao.PatientDAO">
+
+	<select id="resList" parameterType="java.lang.String"
+		resultType="com.essence.erp.dto.MedicalDTO">
+		SELECT * FROM MEDICAL
+		<where>
+			<if test="c_name != null and c_name != ''">
+				M_NAME like '%'||#{c_name}||'%'
+			</if>
+			<if test="c_jumin1 != null and c_jumin1 != ''">
+				AND M_JUMIN1 = #{c_jumin1}
+			</if>
+		</where>
+	</select>
+
+	<insert id="patientAdd" parameterType="com.essence.erp.dto.PatientDTO">
+		INSERT INTO PATIENT VALUES
+		(#{c_no}, #{c_name}, #{c_gender}, #{c_jumin1}, #{c_jumin2},
+		#{c_address}, #{c_phone}, #{c_doctor},TO_CHAR(SYSDATE,'yyyy-mm-dd'))
+	</insert>
+
+	<select id="patientList" resultType="com.essence.erp.dto.PatientDTO">
+		SELECT * FROM PATIENT
+	</select>
+
+	<select id="patientSelect" parameterType="com.essence.erp.dto.PatientDTO"
+		resultType="com.essence.erp.dto.PatientDTO">
+		SELECT * FROM PATIENT WHERE C_NAME = #{c_name}
+	</select>
+
+	<select id="patientView" parameterType="com.essence.erp.dto.PatientDTO"
+		resultType="com.essence.erp.dto.PatientDTO">
+		SELECT * FROM PATIENT WHERE C_NO = #{c_no}
+	</select>
+
+	<select id="treatmentView" resultType="com.essence.erp.dto.TreatmentDTO">
+		SELECT * FROM TREATMENT
+	</select>
+
+	<update id="patientUpdate" parameterType="com.essence.erp.dto.PatientDTO">
+		UPDATE PATIENT SET
+		C_ADDRESS = #{c_address}, C_PHONE = #{c_phone}, C_DOCTOR = #{c_doctor}
+		WHERE C_NO = #{c_no}
+	</update>
+
+	<!-- 진료기록 db에저장 -->
+	<insert id="treatmentAdd">
+	INSERT INTO PATIENT_TREATMENT VALUES 
+		(#{param1}, #{param2}, #{param3}, #{param4}, TO_CHAR(SYSDATE,'YYYY-MM-DD'))
+	</insert>
+
+	<select id="treatmentList" resultType="com.essence.erp.dto.TreatmentDTO">
+		SELECT * FROM TREATMENT
+		order by t_code
+	</select>
+
+	<update id="treatmentUpdate" parameterType="com.essence.erp.dto.TreatmentDTO">
+		update treatment set
+		t_content=#{t_content} where t_code=#{t_code}
+	</update>
+
+	<select id="prescriptionList" resultType="com.essence.erp.dto.PrescriptionDTO">
+		select rownum r, a.* from prescription a order by r
+	</select>
+
+	<select id="prescriptionView" resultType="com.essence.erp.dto.PrescriptionDTO">
+		select * from
+		prescription
+	</select>
+
+	<insert id="prescriptionAdd">
+		INSERT INTO patient_prescription VALUES 
+			(#{param1}, #{param2}, #{param3}, #{param4}, TO_CHAR(SYSDATE,'YYYY-MM-DD'))
+	</insert>
+
+	<select id="TreatmentDate" parameterType="com.essence.erp.dto.Treatment_dateDTO" 
+		resultType="com.essence.erp.dto.Treatment_dateDTO">
+		SELECT A.*, B.T_NAME FROM PATIENT_TREATMENT A, TREATMENT B 
+			WHERE A.C_NO = #{c_no} AND A.T_DATE = #{t_date} AND PATIENT_TREATMENT_NO = #{patient_treatment_no} 
+			AND A.T_CODE = B.T_CODE
+	</select>
+
+	<select id="PrescriptionDate" parameterType="com.essence.erp.dto.Prescription_dateDTO" 
+		resultType="com.essence.erp.dto.Prescription_dateDTO">
+		SELECT * FROM PATIENT_PRESCRIPTION 
+			WHERE C_NO = #{c_no} AND T_DATE = #{t_date} AND PATIENT_PRESCRIPTION_NO = #{patient_prescription_no}
+	</select>
+
+	<select id="tredate" parameterType="java.lang.String" resultType="com.essence.erp.dto.Treatment_dateDTO">
+		SELECT DISTINCT PATIENT_TREATMENT_NO, T_DATE FROM PATIENT_TREATMENT WHERE C_NO = #{C_NO}
+	</select>
+
+	<select id="calcPay" parameterType="java.lang.String" resultType="int">
+		SELECT SUM(T_PAY) FROM TREATMENT WHERE T_CODE
+		IN (SELECT T_CODE FROM PATIENT_TREATMENT WHERE C_NO = #{c_no} AND T_DATE
+		= TO_CHAR(SYSDATE,'YYYY-MM-DD') )
+	</select>
+
+	<select id="treatmentadmin" resultType="com.essence.erp.dto.TreatmentDTO" parameterType="com.essence.erp.dto.Criteria">
+		 <![CDATA[ 
+		select * from (select b.* from (select t_code, t_name ,
+		t_pay, rownum r from treatment) b where r <= #{pageEnd}) where r >=#{pageStart}
+			]]>
+	</select>
+	
+	<select id="treatmentadminCount" resultType="int">
+		select count(*) from treatment
+	</select>
+
+	<insert id="treatmentinsert">
+		insert into treatment values(treatment_seq.nextval,
+		#{t_name}, #{t_pay})
+	</insert>
+
+	<select id="treatment_update_list" resultType="com.essence.erp.dto.TreatmentDTO"
+		parameterType="com.essence.erp.dto.TreatmentDTO">
+		select * from treatment where t_code=#{t_code}
+	</select>
+
+	<update id="treatmentupdate">
+		update treatment set t_name=#{t_name}, t_pay=#{t_pay}
+		where t_code=#{t_code}
+	</update>
+
+	<delete id="treatmentdelete" parameterType="com.essence.erp.dto.TreatmentDTO">
+		delete treatment
+		where t_code=#{t_code}
+	</delete>
+
+	<select id="prescriptionadmin" resultType="com.essence.erp.dto.PrescriptionDTO"
+		parameterType="com.essence.erp.dto.Criteria">
+		 <![CDATA[ 
+		 select * from  (select b.* from (select pre_code, pre_name, pre_way,rownum r from prescription) b where r <= #{pageEnd}) where r >=#{pageStart}
+		]]>
+	</select>
+
+	<insert id="prescriptioninsert">
+		insert into prescription
+		values(prescription_seq.nextval, #{pre_name}, #{pre_way})
+	</insert>
+
+	<select id="prescription_update_list" resultType="com.essence.erp.dto.PrescriptionDTO"
+		parameterType="com.essence.erp.dto.PrescriptionDTO">
+		select * from prescription where pre_code=#{pre_code}
+	</select>
+
+	<update id="prescriptionupdate">
+		update prescription set pre_name=#{pre_name},
+		pre_way=#{pre_way} where pre_code=#{pre_code}
+	</update>
+
+	<delete id="prescriptiondelete" parameterType="com.essence.erp.dto.PrescriptionDTO">
+		delete
+		prescription where pre_code=#{pre_code}
+	</delete>
+
+	<select id="doctorList" resultType="com.essence.erp.dto.HospitalMemberDto">
+			select emp_name from HUMAN_RESOURSE_MANAGEMENT where duty_responsibility = '의사' or duty_responsibility = '병원장'
+	</select>
+
+	<select id="prescriptionadminCount" resultType="int">
+		select
+		count(*) from prescription
+	</select>
+
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.essence.erp.dao.ReceptionDAO">
+
+	<select id="reservationList" resultType="com.essence.erp.dto.ReceptionDTO">
+		SELECT * FROM RECEPTION WHERE CK = 0 ORDER BY RES_DATE, RES_TIME
+	</select>
+	
+	<insert id="reservationAdd" parameterType="com.essence.erp.dto.ReceptionDTO">
+		INSERT INTO RECEPTION (C_NO, C_NAME, RES_DATE, RES_TIME) 
+			VALUES (#{c_no}, #{c_name}, #{res_date}, #{res_time})
+	</insert>
+	
+	<delete id="reservationDelete" parameterType="com.essence.erp.dto.ReceptionDTO">
+		DELETE FROM RECEPTION WHERE C_NO = #{c_no} AND RES_DATE = #{res_date} AND RES_TIME = #{res_time} AND CK = 0
+	</delete>
+	
+	<select id="receptionList" resultType="com.essence.erp.dto.ReceptionDTO">
+		SELECT * FROM RECEPTION WHERE CK = 1 ORDER BY REC_DATE
+	</select>
+	
+	<update id="receptionAdd" parameterType="com.essence.erp.dto.ReceptionDTO">
+		UPDATE RECEPTION SET R_NO = RECEPTION_SEQ.NEXTVAL, REC_DATE = SYSDATE, 
+			CK = 1 WHERE C_NO = #{c_no}
+	</update>
+	
+	<insert id="receptionNew" parameterType="com.essence.erp.dto.ReceptionDTO">
+		INSERT INTO RECEPTION (R_NO, C_NO, C_NAME, REC_DATE, CK) 
+			VALUES (RECEPTION_SEQ.NEXTVAL, #{c_no}, #{c_name}, SYSDATE, 1)
+	</insert>
+	
+	<delete id="receptionDelete" parameterType="java.lang.String">
+		DELETE FROM RECEPTION WHERE R_NO = #{r_no} AND CK = 1
+	</delete>
+	
+	<select id="reservationToday" resultType="com.essence.erp.dto.ReceptionDTO">
+		SELECT * FROM RECEPTION WHERE CK = 0 AND RES_DATE = TO_CHAR(SYSDATE,'YYYY-MM-DD') ORDER BY RES_TIME
+	</select>
+	
+	<select id="patientSearch" parameterType="java.lang.String" resultType="com.essence.erp.dto.PatientDTO">
+		SELECT * FROM PATIENT 
+		<where>
+		<if test="c_name != null and c_name != ''">
+			C_NAME like '%'||#{c_name}||'%' 
+		</if>
+		<if test="c_jumin1 != null and c_jumin1 != ''">
+			AND C_JUMIN1 = #{c_jumin1} 
+		</if>
+		 </where>
+	</select>
+	
+	<select id="receptionNo" parameterType="java.lang.String" resultType="int">
+		SELECT R_NO FROM RECEPTION WHERE C_NO = #{C_NO} AND CK = 1
+	</select>
+	
+	<select id="checkName" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT C_NAME FROM PATIENT WHERE C_NO = #{C_NO}
+	</select>
+	
+	<insert id="inputPay" parameterType="com.essence.erp.dto.PaymentDTO">
+		INSERT INTO PAYMENT VALUES (#{c_no}, #{c_name}, #{t_pay})
+	</insert>
+	
+	<select id="patientCheck" parameterType="java.lang.String" resultType="int">
+		SELECT COUNT(*) FROM PATIENT 
+		<where>
+		<if test="c_name != null and c_name != ''">
+			C_NAME like '%'||#{c_name}||'%' 
+		</if>
+		<if test="c_jumin1 != null and c_jumin1 != ''">
+			AND C_JUMIN1 = #{c_jumin1} 
+		</if>
+		 </where>
+	</select>
+	
+	<select id="resultDate" parameterType="java.lang.String" resultType="com.essence.erp.dto.ReceptionDTO">
+		SELECT * FROM RECEPTION WHERE CK = 0 AND RES_DATE = #{RES_DATE} ORDER BY RES_TIME
+	</select>
+
+</mapper>

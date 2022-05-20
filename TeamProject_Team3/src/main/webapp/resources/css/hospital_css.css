@@ -1,0 +1,17 @@
+@CHARSET "UTF-8";
+
+#table{
+margin: 0 auto;
+padding: 5%;
+}
+.gr {
+	background-color: #F2F2F0
+}
+textarea{
+resize: none;
+}
+#logo_image{
+height: 100px;
+width: 100px; 
+margin: 10px;
+}

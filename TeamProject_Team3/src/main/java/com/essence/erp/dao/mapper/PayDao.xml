@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- myBatis -->
+<mapper namespace="com.essence.erp.dao.PayDao">
+  	 	
+  	 	
+  <select id="get_total_sum" resultType="int">
+ 	 	 select sum (trunc(cdate*8*time_pay-(cdate*8*time_pay*0.045)-(cdate*8*time_pay*0.03)
+		-(cdate*8*time_pay*0.0065)-(cdate*8*time_pay*0.1)-(cdate*8*time_pay*0.1*0.1)))real_pay
+		from(    
+		select human.emp_num emp_num,human.emp_name emp_name,
+		duty.duty_responsibility duty_responsibility
+		,duty.duty_responsibility_code duty_responsibility_code,
+		basic.basic_pay basic_pay, 
+		(select count(*)as num from commute_management 
+		where emp_num = human.emp_num and year=#{param1} and month=#{param2} and status='출근')cdate
+		,(basic_pay/160) time_pay
+		from human_resourse_management human ,
+		duty_responsibility_table duty, basic_pay_table basic
+		where human.duty_responsibility = duty.duty_responsibility
+		and duty.duty_responsibility_code = 
+		basic.duty_responsibility_code and retire_date is null) order by emp_num	
+  </select>
+  	 	
+  	<resultMap id="hospital_pay_list_map" type="java.util.HashMap">
+  	    <id property="emp_num" column="emp_num" />
+        <result property="emp_name" column="emp_name" />
+        <result property="duty_responsibility" column="duty_responsibility" />
+        <result property="basic_pay" column="basic_pay" />
+        <result property="cdate" column="cdate" />
+        <result property="total_pay" column="total_pay" />
+        <result property="real_pay" column="real_pay" />
+        <result property="nation_pension" column="nation_pension" />
+        <result property="health_insurance" column="health_insurance" />
+        <result property="unemployment_insurance" column="unemployment_insurance" />
+        <result property="income_tax" column="income_tax" />
+        <result property="residence_tax" column="residence_tax" />
+    </resultMap>
+  	
+  <select id="hospital_pay_list" resultMap="hospital_pay_list_map">
+select emp_num,emp_name,duty_responsibility,basic_pay,cdate,cdate*8*time_pay total_pay,
+trunc(cdate*8*time_pay-(cdate*8*time_pay*0.045)-(cdate*8*time_pay*0.03)
+-(cdate*8*time_pay*0.0065)-(cdate*8*time_pay*0.1)-(cdate*8*time_pay*0.1*0.1))real_pay,
+trunc(cdate*8*time_pay*0.045)nation_pension,trunc(cdate*8*time_pay*0.03)health_insurance,
+trunc(cdate*8*time_pay*0.0065)unemployment_insurance,trunc(cdate*8*time_pay*0.1)income_tax,
+trunc(cdate*8*time_pay*0.1*0.1)residence_tax
+from(    
+select human.emp_num emp_num,human.emp_name emp_name,
+duty.duty_responsibility duty_responsibility
+,duty.duty_responsibility_code duty_responsibility_code,
+basic.basic_pay basic_pay, 
+(select count(*)as num from commute_management 
+where emp_num = human.emp_num and year=#{param1} and month=#{param2} and status='출근')cdate
+,(basic_pay/160) time_pay
+from human_resourse_management human ,
+duty_responsibility_table duty, basic_pay_table basic
+where human.duty_responsibility = duty.duty_responsibility
+and duty.duty_responsibility_code = 
+basic.duty_responsibility_code and retire_date is null) order by emp_num
+  	</select>
+  
+  
+  <resultMap id="hospital_pay_list_map2" type="java.util.HashMap">
+  	    <id property="emp_num" column="emp_num" />
+        <result property="emp_name" column="emp_name" />
+        <result property="duty_responsibility" column="duty_responsibility" />
+        <result property="basic_pay" column="basic_pay" />
+        <result property="cdate" column="cdate" />
+        <result property="total_pay" column="total_pay" />
+        <result property="real_pay" column="real_pay" />
+        <result property="nation_pension" column="nation_pension" />
+        <result property="health_insurance" column="health_insurance" />
+        <result property="unemployment_insurance" column="unemployment_insurance" />
+        <result property="income_tax" column="income_tax" />
+        <result property="residence_tax" column="residence_tax" />
+    </resultMap>
+    
+  <select id="hospital_pay_list_personal" resultMap="hospital_pay_list_map2">
+select emp_num,emp_name,duty_responsibility,basic_pay,cdate,cdate*8*time_pay total_pay,
+trunc(cdate*8*time_pay-(cdate*8*time_pay*0.045)-(cdate*8*time_pay*0.03)
+-(cdate*8*time_pay*0.0065)-(cdate*8*time_pay*0.1)-(cdate*8*time_pay*0.1*0.1))real_pay,
+trunc(cdate*8*time_pay*0.045)nation_pension,trunc(cdate*8*time_pay*0.03)health_insurance,
+trunc(cdate*8*time_pay*0.0065)unemployment_insurance,trunc(cdate*8*time_pay*0.1)income_tax,
+trunc(cdate*8*time_pay*0.1*0.1)residence_tax
+from(    
+select human.emp_num emp_num,human.emp_name emp_name,
+duty.duty_responsibility duty_responsibility
+,duty.duty_responsibility_code duty_responsibility_code,
+basic.basic_pay basic_pay, 
+(select count(*)as num from commute_management 
+where emp_num = human.emp_num and year=#{param1} and month=#{param2} and status='출근'
+)cdate
+,(basic_pay/160) time_pay
+from human_resourse_management human ,
+duty_responsibility_table duty, basic_pay_table basic
+where human.duty_responsibility = duty.duty_responsibility
+and duty.duty_responsibility_code = 
+basic.duty_responsibility_code and retire_date is null and emp_num=#{param3})
+  	</select>
+  
+  
+<insert id="basic_pay_sign" parameterType="com.essence.erp.dto.BasicPayDto">
+     insert into basic_pay_table values(#{duty_responsibility_code},#{basic_pay})
+</insert>  
+  
+  <resultMap id="basic_pay_map" type="java.util.HashMap">
+  	    <id property="duty_responsibility_code" column="duty_responsibility_code" />
+        <result property="duty_responsibility" column="duty_responsibility" />
+        <result property="basic_pay" column="basic_pay" />
+    </resultMap>
+  
+  <select id="basic_pay_list" resultMap="basic_pay_map">
+  	select duty.duty_responsibility_code,duty.duty_responsibility,basic.basic_pay from basic_pay_table basic,duty_responsibility_table duty where basic.duty_responsibility_code=duty.duty_responsibility_code order by duty.duty_responsibility_code
+  	</select>
+  
+  	<delete id="basic_pay_delete">
+  	delete from basic_pay_table where duty_responsibility_code=#{duty_responsibility_code}
+  	</delete>
+  	
+  	 <resultMap id="basic_pay_content_view_map" type="java.util.HashMap">
+  	    <id property="duty_responsibility_code" column="duty_responsibility_code" />
+        <result property="duty_responsibility" column="duty_responsibility" />
+        <result property="basic_pay" column="basic_pay" />
+    </resultMap>
+  
+  <select id="basic_pay_content_view" resultMap="basic_pay_content_view_map">
+  	select duty.duty_responsibility_code,duty.duty_responsibility,basic.basic_pay
+	from basic_pay_table basic,duty_responsibility_table duty 
+	where basic.duty_responsibility_code=duty.duty_responsibility_code and
+	duty.duty_responsibility_code=#{duty_responsibility_code}
+	order by duty.duty_responsibility_code
+  	</select>
+  	
+  	<update id="basic_pay_modify">
+  	update basic_pay_table set basic_pay=#{param1} where duty_responsibility_code=#{param2}
+  	</update>
+  	
+  	<select id="pay_month_check" resultType="string">
+  	 select pay_check from pay_check_no where year=#{param1} and month=#{param2}
+  	</select>
+  	
+  	<insert id="insert_account">
+  	 insert into pay_check_no values(pay_check_no2.nextval,#{param1},#{param2},'확인')
+  	</insert>
+  	
+  	<insert id="write_total_pay">
+		INSERT INTO ACCOUNT VALUES 
+			(ACCOUNT_SEQ.NEXTVAL, #{date} , '월급', '병원 사원들 총 지출 급여'||'('||#{param2}||'월'||')', 0, #{param1})
+		<selectKey resultType="java.lang.String" keyProperty="date"
+			order="BEFORE">
+			select to_char(sysdate,'yyyy/mm/dd') from dual
+		</selectKey> 
+	</insert>
+  	
+  	
+  	 
+  
+</mapper>

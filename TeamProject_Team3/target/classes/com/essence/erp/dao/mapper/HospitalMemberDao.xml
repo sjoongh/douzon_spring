@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- myBatis -->
+<mapper namespace="com.essence.erp.dao.HospitalMemberDao">
+	<!-- 사원 등록 -->
+	<insert id="sign" parameterType="com.essence.erp.dto.HospitalMemberDto">
+		insert into human_resourse_management
+		values(#{emp_num},#{emp_name},(#{telephone}||'-'||#{telephone10}||'-'||#{telephone11}),(#{telephone2}||'-'||#{telephone20}||'-'||#{telephone21}),#{address_number},#{address},#{department_code},(#{jumin_number}||'-'||#{jumin_number2}),#{gender},#{join_date},#{retire_date},#{email},#{rank_position},#{duty_responsibility},(#{continuous_service_date}||'일'),#{marital_status},#{bank_name},#{account_holder},#{account_number},null,null,#{join_company_division})
+		<selectKey resultType="java.lang.String" keyProperty="continuous_service_date"
+			order="BEFORE">
+			select (to_date(to_char(sysdate, 'yyyymmdd')))-(to_date(#{join_date})) from
+			dual
+		</selectKey>
+	</insert>
+	<insert id="signFile" parameterType="com.essence.erp.dto.HospitalMemberDto">
+		insert into human_resourse_management
+		values(#{emp_num},#{emp_name},(#{telephone}||'-'||#{telephone10}||'-'||#{telephone11}),(#{telephone2}||'-'||#{telephone20}||'-'||#{telephone21}),#{address_number},#{address},#{department_code},(#{jumin_number}||'-'||#{jumin_number2}),#{gender},#{join_date},#{retire_date},#{email},#{rank_position},#{duty_responsibility},(#{continuous_service_date}||'일'),#{marital_status},#{bank_name},#{account_holder},#{account_number},#{picture},null,#{join_company_division})
+		<selectKey resultType="java.lang.String" keyProperty="continuous_service_date"
+			order="BEFORE">
+			select (to_date(to_char(sysdate, 'yyyymmdd')))-(to_date(#{join_date})) from
+			dual
+		</selectKey>
+	</insert>
+	<!-- 퇴사자 리스트 -->
+	<select id="resignation_list" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select emp_num,emp_name,telephone,h.department_code,d.DEPARTMENT,
+		duty_responsibility,to_char(join_date,'yyyy/mm/dd')
+		join_date,account_number,email,to_char(retire_date,'yyyy/mm/dd') retire_date,
+   		(select (to_date(to_char(sysdate, 'yyyymmdd')))-(to_date(retire_date)) from
+			dual) diffdays    
+		from human_resourse_management h,DEPARTMENT_TABLE d
+		where h.department_code = d.DEPARTMENT_CODE and retire_date is not null
+		order by emp_num
+	</select>
+
+	<!-- 퇴사자 등록 -->
+	<update id="resignation_sign_up" parameterType="com.essence.erp.dto.HospitalMemberDto">
+		update human_resourse_management set retire_date=#{retire_date} where emp_num=#{emp_num}
+	</update>
+	
+	<!-- 퇴사자 취소 처리 -->
+	<update id="resignation_cancel_up" parameterType="com.essence.erp.dto.HospitalMemberDto">
+		update human_resourse_management set retire_date = null where emp_num=#{emp_num}
+	</update>
+     
+
+	<!-- 사원 리스트 -->
+	<select id="hospitallist" resultType="com.essence.erp.dto.HospitalMemberDto" parameterType="com.essence.erp.dto.Criteria">
+	<![CDATA[ 
+		select * from (select b.*, rownum r from (select emp_num,emp_name,telephone,h.department_code,d.DEPARTMENT,CONTINUOUS_SERVICE_DATE,
+		duty_responsibility,to_char(join_date,'yyyy/mm/dd')
+		join_date,account_number,email
+		from human_resourse_management h,DEPARTMENT_TABLE d
+		where h.department_code = d.DEPARTMENT_CODE and retire_date is null
+		order by emp_num) b where rownum <= #{pageEnd}) where r >= #{pageStart}
+		]]>
+	</select>
+	
+	<!-- 사원 개인 리스트 -->
+	<select id="hospitallist_personal" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select emp_num,emp_name,telephone,h.department_code,d.DEPARTMENT,CONTINUOUS_SERVICE_DATE,
+		duty_responsibility,to_char(join_date,'yyyy/mm/dd')
+		join_date,account_number,email
+		from human_resourse_management h,DEPARTMENT_TABLE d
+		where h.department_code = d.DEPARTMENT_CODE and retire_date is null
+		and emp_num=#{emp_num}
+	</select>
+
+	<!-- 사원 검색1(조건 넣고 검색시) -->
+	<select id="hospitallist_search" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select
+		emp_num,emp_name,telephone,department,d.department_code,duty_responsibility,to_char(join_date,'yyyy/mm/dd')
+		join_date,account_number,email from human_resourse_management h
+		,department_table d where h.department_code = d.department_code and
+		(emp_num=#{variable}
+		or emp_name=#{variable}) and retire_date is null order by emp_num
+	</select>
+
+	<!-- 사원 검색2(빈칸넣고 검색시) -->
+	<select id="hospitallist_search2" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select
+		emp_num,emp_name,telephone,d.department,duty_responsibility,to_char(join_date,'yyyy/mm/dd')
+		join_date,account_number,email from human_resourse_management h
+		,department_table d where h.department_code = d.department_code and retire_date is null
+		order	by emp_num
+	</select>
+
+	<!-- 사원 상세보기 -->
+	<select id="hospital_content_view" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select emp_num,emp_name,telephone,telephone2,address_number,
+		address,d.department_code,d.department,jumin_number,gender,to_char(join_date,'yyyy/mm/dd')
+		join_date,
+		to_char(retire_date,'yyyy/mm/dd') retire_date,email,rank_position,duty_responsibility,
+		continuous_service_date,
+		marital_status,bank_name,account_holder,account_number,
+		picture,attach_file,join_company_division
+		from human_resourse_management h ,DEPARTMENT_TABLE d where
+		emp_num=#{emp_num} and h.department_code=d.department_code
+	</select>
+
+	<!-- 사원 삭제 -->
+	<delete id="hospital_delete">
+		delete from human_resourse_management where emp_num=#{emp_num}
+	</delete>
+
+	<!-- 사원 수정 -->
+	<update id="hospital_modify">
+		update human_resourse_management set
+		telephone=#{telephone},telephone2=#{telephone2},address_number=#{address_number},address=#{address},department_code=#{department_code}
+		,join_date=#{join_date},retire_date=#{retire_date},email=#{email},rank_position=#{rank_position}
+		,duty_responsibility=#{duty_responsibility},marital_status=#{marital_status},bank_name=#{bank_name}
+		,account_holder=#{account_holder},account_number=#{account_number}
+		where emp_num=#{emp_num}
+	</update>
+	<update id="hospital_modify_File">
+		update human_resourse_management set
+		telephone=#{telephone},telephone2=#{telephone2},address_number=#{address_number},address=#{address},department_code=#{department_code}
+		,join_date=#{join_date},retire_date=#{retire_date},email=#{email},rank_position=#{rank_position}
+		,duty_responsibility=#{duty_responsibility},marital_status=#{marital_status},bank_name=#{bank_name}
+		,account_holder=#{account_holder},account_number=#{account_number},picture=#{picture}
+		where emp_num=#{emp_num}
+	</update>
+
+
+	<!-- 사원 리스트 메뉴 정렬 -->
+	<select id="hospital_content_array" resultType="com.essence.erp.dto.HospitalMemberDto" parameterType="com.essence.erp.dto.Criteria">
+		<![CDATA[ 
+		select * from (select b.*, rownum r from(select emp_num,emp_name,telephone,d.department,duty_responsibility,to_char(join_date,'yyyy/mm/dd')
+		join_date,account_number,email from human_resourse_management h
+		,department_table d where h.department_code = d.department_code and retire_date is null
+		order   by ${array_variable} desc) b where rownum <= #{pageEnd}) where r >=#{pageStart}
+		]]>
+		</select>
+
+	<!-- 사원 리스트 메뉴 정렬 개인-->
+	<select id="hospital_content_array2" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select
+		emp_num,emp_name,telephone,d.department,duty_responsibility,to_char(join_date,'yyyy/mm/dd')
+		join_date,account_number,email from human_resourse_management h
+		,department_table d where h.department_code = d.department_code and retire_date is null and emp_num=#{param2}
+		order	by ${param1} desc
+		<!-- select * from human_resourse_management h ,DEPARTMENT_TABLE d where 
+			order by #{array_variable} desc -->
+	</select>
+
+
+
+	<!-- 직책 리스트 -->
+	<select id="duty_list" resultType="com.essence.erp.dto.DutyDto">
+		select * from duty_responsibility_table order by DUTY_RESPONSIBILITY_CODE
+	</select>
+
+	<!-- 직책 등록 -->
+	<insert id="duty_sign" parameterType="com.essence.erp.dto.DutyDto">
+		insert into
+		duty_responsibility_table
+		values(#{duty_responsibility_code},#{duty_responsibility})
+	</insert>
+
+	<!-- 직책 상세보기 -->
+	<select id="duty_content_view" resultType="com.essence.erp.dto.DutyDto">
+		select * from duty_responsibility_table where
+		duty_responsibility_code=#{duty_responsibility_code}
+	</select>
+
+	<!-- 직책 수정 -->
+	<update id="duty_modify">
+		update duty_responsibility_table set
+		duty_responsibility=#{duty_responsibility} where
+		duty_responsibility_code=#{duty_responsibility_code}
+	</update>
+
+	<!-- 직책 삭제 -->
+	<delete id="duty_delete">
+		delete from duty_responsibility_table where
+		duty_responsibility_code=#{duty_responsibility_code}
+	</delete>
+
+	<!-- 부서리스트 -->
+	<select id="department_list" resultType="com.essence.erp.dto.DepartDto">
+		select * from department_table order by department_code
+	</select>
+
+	<!-- 부서등록 -->
+	<insert id="department_sign" parameterType="com.essence.erp.dto.DepartDto">
+		insert into
+		department_table
+		values(#{department_code},#{department})
+	</insert>
+
+	<!-- 부서 삭제 -->
+	<delete id="department_delete">
+		delete from department_table where department_code=#{department_code}
+	</delete>
+
+	<!-- 부서 상세보기 -->
+	<select id="department_content_view" resultType="com.essence.erp.dto.DepartDto">
+		select * from department_table where department_code=#{department_code}
+	</select>
+
+	<!-- 부서 수정 -->
+	<update id="department_modify">
+		update department_table set department=#{department} where
+		department_code=#{department_code}
+	</update>
+
+	<!-- 부서 검색 리스트 -->
+	<select id="depart_search_list" resultType="com.essence.erp.dto.DepartDto">
+		select * from department_table order by department_code
+	</select>
+
+	<!-- 은행 검색 리스트 -->
+	<select id="bank_search_list" resultType="com.essence.erp.dto.BankDto">
+		select * from bank
+	</select>
+
+	<!-- 사원 검색 리스트 (퇴사자포함)-->
+	<select id="emp_num_search" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select emp_num,emp_name from human_resourse_management order by emp_num
+	</select>
+
+	<!-- 사원 검색 리스트 (퇴사자제외)-->
+	<select id="emp_num_search2" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select emp_num,emp_name from human_resourse_management where retire_date is null order by emp_num
+	</select>
+
+
+	<!-- 사원 중복 검색 리스트 -->
+	<select id="emp_num_search_overlap" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select emp_num,emp_name from human_resourse_management where
+		emp_num=#{emp_num} order by emp_num
+	</select>
+	<!-- 사원 중복 검색 리스트 -->
+	<select id="emp_num_search_overlap2" resultType="com.essence.erp.dto.HospitalMemberDto">
+		select emp_num,emp_name from human_resourse_management order by emp_num
+	</select>
+	
+	<!-- 페이징 카운트 -->
+	<select id="hospital_list_count" resultType="int">
+		select count(*)	from human_resourse_management h,DEPARTMENT_TABLE d
+		where h.department_code = d.DEPARTMENT_CODE and retire_date is null
+		order by emp_num
+	</select>
+
+</mapper>

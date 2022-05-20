@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+   "-//mybatis.org//DTD Mapper 3.0//EN"
+      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.essence.erp.dao.UserDao">
+	<select id="list" resultType="com.essence.erp.dto.UserDto">
+		select * from user_member order by
+		u_id desc
+
+	</select>
+
+	<insert id="insert" parameterType="com.essence.erp.dto.UserDto">
+		insert into
+		user_member(u_num,u_id,u_pwd,u_position,u_name,u_phone,u_team,u_joindate,u_modifydate)
+		values(user_member_sequence.nextval,#{u_id},#{u_pwd},#{u_position}
+		,#{u_name},#{u_phone},#{u_team},sysdate,sysdate)
+	</insert>
+
+	<delete id="delete" parameterType="com.essence.erp.dto.UserDto">
+		delete user_member where
+		u_id=#{u_id}
+	</delete>
+
+	<select id="update_list" resultType="com.essence.erp.dto.UserDto"
+		parameterType="com.essence.erp.dto.UserDto">
+		select * from user_member where u_id=#{u_id}
+	</select>
+
+	<update id="update" parameterType="com.essence.erp.dto.UserDto">
+		update user_member set
+		u_pwd=#{u_pwd}, u_position=#{u_position},
+		u_name=#{u_name},
+		u_phone=#{u_phone},
+		u_team=#{u_team},
+		u_modifydate=sysdate where u_id
+		=
+		#{u_id}
+	</update>
+
+	<select id="userListCount" resultType="int">
+		select count(*) from
+		user_member
+	</select>
+
+	<select id="list2" resultType="com.essence.erp.dto.UserDto"
+		parameterType="com.essence.erp.dto.Criteria">
+		<![CDATA[ 
+		select B.* from (select C.*, rownum R from
+			(select u.*,nvl(r.role_check,'X') role_check  from (select * from USER_MEMBER) u left outer join 
+          (SELECT c_id,case when count>0 then 'O' else 'X' end role_check from 
+            (SELECT c_id,COUNT(c_id) count FROM ROLE_COMPARISON  GROUP BY c_id)) r on r.c_id=u.u_id ORDER BY u.u_num desc) C
+				where rownum <= #{pageEnd}) B where R >= #{pageStart}
+		]]>
+	</select>
+	<!-- sql 비교문 사용시 CDATA 는 꼭 써줘야 오류가 안난다. -->
+
+	<!-- 권한 부분 -->
+	<insert id="roleInsert" parameterType="com.essence.erp.dto.UserDto">
+		insert into SECURITY_ROLE
+		(r_id, r_authority) values(#{u_id},#{u_authority})
+	</insert>
+
+	<delete id="deleteRole" parameterType="com.essence.erp.dto.UserDto">
+		delete SECURITY_ROLE where
+		r_id = #{u_id}
+	</delete>
+
+	<delete id="roleDelete" parameterType="com.essence.erp.dto.UserDto">
+		delete SECURITY_ROLE where
+		r_id=#{u_id}
+	</delete>
+
+	<select id="roleSelect" parameterType="com.essence.erp.dto.UserDto"
+		resultType="int">
+		select count(*) from security_role where r_id=#{u_id} and
+		R_AUTHORITY = #{u_position}
+	</select>
+
+
+	<select id="user_search" resultType="com.essence.erp.dto.UserDto"
+		parameterType="com.essence.erp.dto.Criteria">
+		select emp_num u_id, emp_name u_name, telephone u_phone,
+		DUTY_RESPONSIBILITY u_position,
+		nvl(department,' ') u_team from (select
+		emp_num,emp_name,telephone,DUTY_RESPONSIBILITY, d.DEPARTMENT from
+		HUMAN_RESOURSE_MANAGEMENT
+		h , DEPARTMENT_TABLE d
+		where h.DEPARTMENT_CODE
+		= d.DEPARTMENT_CODE) left join
+		(select u_id from
+		USER_MEMBER) a
+		on
+		emp_num = u_id where u_id is null order by emp_num
+		desc
+	</select>
+
+
+	<select id="user_search_detail" resultType="com.essence.erp.dto.UserDto"
+		parameterType="String">
+		select emp_num u_id, emp_name u_name, telephone u_phone,
+		DUTY_RESPONSIBILITY u_position,
+		nvl(department,' ') u_team from (select
+		emp_num,emp_name,telephone,DUTY_RESPONSIBILITY, d.DEPARTMENT from
+		HUMAN_RESOURSE_MANAGEMENT
+		h , DEPARTMENT_TABLE d
+		where h.DEPARTMENT_CODE
+		= d.DEPARTMENT_CODE) where
+		emp_name=#{u_name} order
+		by
+		emp_num desc
+	</select>
+
+	<select id="list3" resultType="com.essence.erp.dto.UserDto"
+		parameterType="com.essence.erp.dto.UserDto">
+		select emp_num u_id, emp_name u_name, telephone
+		u_phone,DUTY_RESPONSIBILITY u_position,
+		nvl(department,' ') u_team from
+		(select
+		emp_num,emp_name,telephone,DUTY_RESPONSIBILITY,d.DEPARTMENT
+		from HUMAN_RESOURSE_MANAGEMENT
+		h , DEPARTMENT_TABLE d
+		where
+		h.DEPARTMENT_CODE = d.DEPARTMENT_CODE) where emp_num=#{u_id}
+	</select>
+
+	<select id="dutyCall" resultType="String">
+		select DUTY_RESPONSIBILITY from
+		duty_responsibility_table ORDER BY DUTY_RESPONSIBILITY_CODE
+	</select>
+ 
+ 	<select id="list4" resultType="com.essence.erp.dto.UserDto" parameterType="String">
+		select u.*,nvl(r.role_check,'X') role_check  from (select * from USER_MEMBER) u left outer join 
+          (SELECT c_id,case when count>0 then 'O' else 'X' end role_check from 
+            (SELECT c_id,COUNT(c_id) count FROM ROLE_COMPARISON  GROUP BY c_id)) r on r.c_id=u.u_id where u_id=#{u_id} ORDER BY u.u_num desc
+	</select>
+	
+	<select id="pass_search" resultType="int">
+		select count(*) from user_member where u_id=#{u_id} and u_name=#{u_name} and u_email=#{u_email}
+	</select>
+	
+	<update id="pass_update" parameterType="String">
+		update user_member set u_pwd=#{u_pwd} where u_name=#{u_name}
+	</update>
+</mapper>

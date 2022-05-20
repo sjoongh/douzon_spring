@@ -1,0 +1,48 @@
+@CHARSET "UTF-8";
+
+
+footer {
+	/* 	border: 1px solid blue; */
+	background-color: black;
+	height: 10%;
+}
+#sidemenu{
+/* 	border-right: 1px solid gray;
+	height: 100%; */
+}
+sidemenu2 {
+	margin-top: 5%;
+}
+
+#hr1 {
+	border-bottom: 1px solid gray;
+}
+#navbar{
+	margin-top: 20px;
+}
+#content {
+	margin: 0 auto;
+	padding: 1%;
+ 	border-left: 1px solid gray; 
+	 height: auto;  
+	 min-height: 81%;
+}
+
+#sidemenu {
+	padding-top: 1%;
+}
+
+#logo_main{
+	height: 50px;
+	width: 50px;
+	margin: 10px;
+}
+
+
+.sky{
+background-color: #F0F8FF;
+}
+table tr td,table tr th{
+vertical-align: middle  !important;
+}
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.essence.erp.dao.NoticeDAO">
+
+	<select id="list" resultType="com.essence.erp.dto.NoticeDTO">
+		SELECT * FROM NOTICE ORDER BY N_DATE DESC
+	</select>
+	
+	<insert id="write" parameterType="com.essence.erp.dto.NoticeDTO">
+		INSERT INTO NOTICE (N_ID, N_NAME, N_TITLE, N_CONTENT) VALUES (NOTICE_SEQ.NEXTVAL, #{n_name}, #{n_title}, #{n_content})
+	</insert>
+	
+	<insert id="writeFile" parameterType="com.essence.erp.dto.NoticeDTO">
+		INSERT INTO NOTICE (N_ID, N_NAME, N_TITLE, N_CONTENT, N_FILESRC) 
+			VALUES (NOTICE_SEQ.NEXTVAL, #{n_name}, #{n_title}, #{n_content}, #{n_filesrc})
+	</insert>
+	
+	<update id="hit" parameterType="java.lang.String">
+		UPDATE NOTICE SET N_HIT = N_HIT + 1 WHERE N_ID= #{N_ID}
+	</update>
+	
+	<select id="view" parameterType="java.lang.String" resultType="com.essence.erp.dto.NoticeDTO">
+		SELECT * FROM NOTICE WHERE N_ID= #{N_ID}
+	</select>
+	
+	<update id="modify" parameterType="com.essence.erp.dto.NoticeDTO">
+		UPDATE NOTICE SET N_TITLE = #{n_title}, N_CONTENT = #{n_content} WHERE N_ID= #{n_id}
+	</update>
+	
+	<update id="modifyFile" parameterType="com.essence.erp.dto.NoticeDTO">
+		UPDATE NOTICE SET N_TITLE = #{n_title}, N_CONTENT = #{n_content}, N_FILESRC = #{n_filesrc} WHERE N_ID= #{n_id}
+	</update>
+	
+	<delete id="delete" parameterType="java.lang.String">
+		DELETE FROM NOTICE WHERE N_ID = #{N_ID}
+	</delete>
+
+</mapper>

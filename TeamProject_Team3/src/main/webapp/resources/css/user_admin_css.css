@@ -1,0 +1,8 @@
+@CHARSET "UTF-8";
+
+.table>tbody>tr>.thick-line {
+	border-top: 2px solid;
+}
+#insert_button{
+	vertical-align: middle;
+}

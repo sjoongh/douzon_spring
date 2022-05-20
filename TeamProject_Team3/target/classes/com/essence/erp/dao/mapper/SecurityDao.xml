@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+   "-//mybatis.org//DTD Mapper 3.0//EN"
+      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.essence.erp.dao.SecurityDao">
+
+	<insert id="role_insert" parameterType="com.essence.erp.dto.Role_InsertDto">
+		insert into
+		role_comparison(C_REFERENCE,c_authority_name,c_id,c_authority)
+		values(#{c_reference},#{c_authority_name},#{c_id},#{c_authority})
+	</insert>
+
+	<delete id="deleteRoleAuthority" parameterType="com.essence.erp.dto.UserDto">
+		delete
+		role_comparison where c_id=#{u_id}
+	</delete>
+
+	<select id="selectCount" parameterType="com.essence.erp.dto.UserDto"
+		resultType="int">
+		select count(*) from role_comparison where c_id=#{u_id}
+	</select>
+
+	<select id="authority" resultType="com.essence.erp.dto.SecurityDto">
+		select C_AUTHORITY_NAME code,C_KOREA_NAME authority from role_korea where
+		num != 1 and num !=6 order by num desc
+	</select>
+
+	<select id="authority_check" resultType="String">
+		select k.C_KOREA_NAME from ROLE_COMPARISON c join role_korea k on
+		c.C_AUTHORITY_NAME = k.C_AUTHORITY_NAME where c.C_REFERENCE=#{param1}
+		and c_id=#{param2}
+	</select>
+
+<!-- 	<select id="authority2" resultType="String">
+		select C_AUTHORITY_NAME code, C_KOREA_NAME authority from role_korea where
+		num=2 or num=1
+	</select>
+	
+		<select id="authority3" resultType="String">
+		select C_AUTHORITY_NAME code, C_KOREA_NAME authority from role_korea where
+		num=2 or num=1
+	</select> -->
+</mapper>

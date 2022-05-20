@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- myBatis -->
+<mapper namespace="com.essence.erp.dao.CommuteDao">
+
+     <!-- 출근 퇴근 처리 -->
+	<insert id="commute_check" parameterType="String">
+		insert into
+		commute_management
+		(commute_num,emp_num,status,year, month,
+		day,hour,minute,second)
+		values(commute_seq.nextval,#{param2},#{param1},
+		(select to_char(sysdate,'yyyy') from dual),
+		(select
+		to_char(sysdate,'mm') from dual) ,
+		(select to_char(sysdate,'dd') from
+		dual),
+		(select to_char(sysdate,'hh24') from dual) ,
+		(select
+		to_char(sysdate,'mi') from dual) ,
+		(select to_char(sysdate,'ss') from
+		dual)
+		)
+	</insert>
+	
+	<!-- 이름 가져오기 -->
+	<select id="getName" resultType="string">
+    select emp_name from HUMAN_RESOURSE_MANAGEMENT where emp_num=#{emp_num}
+  	</select>
+	
+	<!--  공휴일 등 처리 -->
+	<insert id="commute_holyday_process">
+	 insert into commute_management(commute_num,emp_num,status,year,month,day) values(commute_seq.nextval,#{param1},#{param2},#{param3},#{param4},#{param5})
+	</insert>
+	<!--  공휴일 리스트 처리 -->
+	<insert id="emp_absence_list">
+	insert into emp_absence_list values(emp_absence_list_seq.nextval,#{param1},#{param2},#{param3},#{param4})
+	</insert>
+	
+	
+	
+	<!--  휴가 및 결근 신청 관리자에게 승인받는 테이블로 보내기 -->
+	<insert id="emp_absence_list_wait_approval">
+	insert into emp_absence_wait_approval values(emp_absence_wait_seq.nextval,#{param1},#{param2},#{param3},#{param4})
+	</insert>
+	
+	
+	
+	<!--  공휴일등 결근자들 리스트 모음 맵 -->
+	<resultMap id="emp_absence_list_get_map" type="java.util.HashMap">
+		<id property="emp_name" column="emp_name" />
+		<result property="emp_absence_list_code" column="emp_absence_list_code" />
+		<result property="emp_num" column="emp_num" />
+        <result property="status" column="status" />
+        <result property="seday" column="seday" />
+        <result property="telephone" column="telephone" />            
+    </resultMap>
+    
+    
+  	<!--  공휴일등 결근자들 리스트 모음 -->
+  	<select id="emp_absence_list_get" resultMap="emp_absence_list_get_map" parameterType="com.essence.erp.dto.Criteria">
+ 		    <![CDATA[ 
+ 		select * from (select b.*, rownum r from  (select emp_absence_list_code,emp_num,emp_name,status, seday, telephone from 
+		(select emp_absence_list_code,h.emp_num,emp_name,status,(start_date ||' ~ '|| end_date)as seday, telephone 
+  		,substr(start_date,1,4) year ,substr(start_date,6,2) month
+		from human_resourse_management h ,emp_absence_list e 
+		where h.emp_num=e.emp_num order by start_date)
+ 		where year=#{year} and month=#{month}) b where rownum <= #{pageEnd}) where r >= #{pageStart}
+ 				]]>
+  	</select>
+  	
+  	
+  	<!--  휴가 신청 대기 리스트 모음 맵 -->
+	<resultMap id="emp_absence_list_get2_map" type="java.util.HashMap">
+		<id property="emp_name" column="emp_name" />
+		<result property="emp_absence_list_code" column="emp_absence_list_code" />
+		<result property="emp_num" column="emp_num" />
+        <result property="status" column="status" />
+        <result property="start_date" column="start_date" />
+        <result property="end_date" column="end_date" />
+        <result property="seday" column="seday" />
+        <result property="telephone" column="telephone" />            
+    </resultMap>
+  	
+  	
+  	<!--  휴가 신청 대기 리스트 모음 -->
+	<select id="emp_absence_list_get2" resultMap="emp_absence_list_get2_map">
+		select emp_absence_list_code,emp_num,emp_name,status, seday, telephone,start_date,end_date from 
+		(select emp_absence_list_code,h.emp_num,emp_name,status,(start_date ||' ~ '|| end_date) as seday, telephone 
+  		,substr(start_date,1,4) year ,substr(start_date,6,2) month,
+    	start_date,end_date
+		from human_resourse_management h ,EMP_ABSENCE_WAIT_APPROVAL e 
+		where h.emp_num=e.emp_num order by start_date)
+	</select>
+	
+	<!--  공휴일등 결근자들 리스트 삭제 -->
+	<delete id="emp_absence_list_delete">
+	 delete from emp_absence_list where emp_absence_list_code=#{emp_absence_list_code}
+	</delete>
+	
+	<!--  공휴일등 결근자들 리스트 삭제2 -->
+	<delete id="emp_absence_list_delete2">
+	delete from commute_management 
+	where emp_num=#{param1} 
+    and status=#{param2}
+	</delete>
+	
+	<!--  공휴일등 결근자들 리스트 삭제3 -->
+	<delete id="emp_absence_list_delete3">
+	delete from EMP_ABSENCE_WAIT_APPROVAL 
+	where emp_num=#{param1} 
+    and status=#{param2}
+	</delete>
+	
+	<!--오늘 날짜 가져오기 -->
+	<select id="compare_commute_date" resultType="com.essence.erp.dto.CommuteDto">
+		select status ,(year|| month || day) as day from commute_management where
+		emp_num=#{emp_num} and year=to_char(sysdate,'yyyy')and month=to_char(sysdate,'mm') and day=to_char(sysdate,'dd')
+	</select>
+	
+	<!-- 출근,퇴근 날짜 가져오기 -->
+	<select id="commute_day_gotowork" resultType="com.essence.erp.dto.CommuteDto">
+		select status ,(year||'-'|| month ||'-'|| day ||'T'|| HOUR
+		||':'||MINUTE||':'||SECOND) as day from commute_management where
+		emp_num=#{emp_num} and (status='출근' or status='퇴근')
+	</select>
+	
+	<!-- 공휴일 날짜 가져오기 -->
+	<select id="commute_day_gotowork2" resultType="com.essence.erp.dto.CommuteDto">
+		select status ,(year||'-'||month ||'-'|| day)  as day from commute_management where
+		emp_num=#{emp_num} and (not status='출근' and not status='퇴근')
+	</select>
+	
+	<!-- 오늘 출근 날짜 시간 가져오기 -->
+	 <select id="commute_day_gotowork3" resultType="com.essence.erp.dto.CommuteDto">
+		select status, (year||'-'|| month ||'-'|| day ||'T'|| HOUR
+		||':'||MINUTE||':'||SECOND) as day from
+		(select status ,(year||'-'||month ||'-'|| day) as day2,year,month,day,hour,minute,second from commute_management where
+		emp_num=#{emp_num} and status='출근')
+   		where day2 =( select to_char(sysdate,'yyyy-mm-dd') from dual)
+	</select> 
+	
+	<!-- 오늘 퇴근 날짜 시간 가져오기 -->
+	 <select id="commute_day_gotowork4" resultType="com.essence.erp.dto.CommuteDto">
+		select status, (year||'-'|| month ||'-'|| day ||'T'|| HOUR
+		||':'||MINUTE||':'||SECOND) as day from
+		(select status ,(year||'-'||month ||'-'|| day) as day2,year,month,day,hour,minute,second from commute_management where
+		emp_num=#{emp_num} and status='퇴근')
+   		where day2 =( select to_char(sysdate,'yyyy-mm-dd') from dual)
+	</select> 
+		
+	<!-- 모든 멤버의 공휴일 날짜 가져오기  위에껏들은 개인-->
+	<select id="commute_day_gotowork_absence" resultType="com.essence.erp.dto.CommuteDto">
+		 select (emp_name||'('||'결근'||')') status,(year||'-'||month ||'-'|| day)  as day 
+   		 from HUMAN_RESOURSE_MANAGEMENT h,commute_management c  
+   		 where h.emp_num=c.emp_num and (not status='출근' and not status='퇴근')
+	</select>
+		
+    <!-- 결근 사유 리스트 -->
+	<select id="absence_list" resultType="com.essence.erp.dto.CommuteAbsenceDto">
+		select * from commute_absence order by absence_code
+	</select>
+   
+     <!--  결근 사유 삭제 -->
+     <delete id="absence_delete">
+     delete from commute_absence where absence_code=#{absencecode}
+     </delete>
+
+	<!--  결근 사유 등록 -->
+	<insert id="absence_sign_up" parameterType="com.essence.erp.dto.CommuteAbsenceDto">
+	 insert into commute_absence values(#{absence_code},#{absence_name})
+	</insert>
+	
+	
+	
+	<!-- 페이징처리 카운트 -->
+	<select id="emp_absence_list_get_count" resultType="int">
+		 select count(*) from (select emp_absence_list_code,emp_num,emp_name,status, seday, telephone from 
+		(select emp_absence_list_code,h.emp_num,emp_name,status,(start_date ||' ~ '|| end_date)as seday, telephone 
+  		,substr(start_date,1,4) year ,substr(start_date,6,2) month
+		from human_resourse_management h ,emp_absence_list e 
+		where h.emp_num=e.emp_num order by start_date)
+ 		where year=#{param1} and month=#{param2})
+	</select>
+
+</mapper>
