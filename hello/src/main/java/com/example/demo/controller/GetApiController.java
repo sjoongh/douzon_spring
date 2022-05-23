@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.UserRequest;
+
 @RestController
 @RequestMapping("/api/get")
 public class GetApiController {
@@ -51,5 +53,11 @@ public class GetApiController {
 			@RequestParam int age) {
 		
 		return null;
+	}
+	
+	@GetMapping(path="query-param03")
+	public String queryParam02(UserRequest userRequest) { // 객체 타입으로 리턴할때는 @RequestParam 안쓴다. 권장하는 방식
+		
+		return userRequest.toString();
 	}
 }
