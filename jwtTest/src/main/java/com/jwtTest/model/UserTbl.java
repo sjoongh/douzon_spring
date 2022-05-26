@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @SequenceGenerator(name="USER_SEQ_GENERATOR",
-				sequenceName="SEQ_USER",
+				sequenceName="SEQ_UserTbl",
 				initialValue=1,
 				allocationSize=1)
-public class User {
+public class UserTbl {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USER_SEQ_GENERATOR")

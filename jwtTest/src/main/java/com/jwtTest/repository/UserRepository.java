@@ -2,8 +2,8 @@ package com.jwtTest.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.jwtTest.model.User;
+import com.jwtTest.model.UserTbl;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserTbl, Long> {
 
 }
